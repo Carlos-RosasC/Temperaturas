@@ -1,0 +1,101 @@
+<html>
+  <head>
+    <script
+      src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"
+      type="text/javascript"
+      charset="utf-8"
+    ></script>
+    <script src="raphael-2.1.4.min.js"></script>
+    <script src="justgage.js"></script>
+
+    <script>
+      var accessToken = "f973f1205d6939fc25c5bb057085b3ae65611e40";
+      var deviceID = "0a10aced202194944a04a138";
+      var url = "https://api.particle.io/v1/devices/" + deviceID + "/lectura";
+      var url2 = "https://api.particle.io/v1/devices/" + deviceID + "/humedad";
+      var url3 = "https://api.particle.io/v1/devices/" + deviceID + "/gradosF";
+
+      //FUNCION PARA GRADOS C
+      function callback(data, status) {
+        if (status == "success") {
+          temp = parseFloat(data.result);
+          temp = temp.toFixed(2);
+          g.refresh(temp);
+          setTimeout(getReading, 1000);
+        } else {
+          alert("There was a problem");
+        }
+      }
+      function getReading() {
+        $.get(url, { access_token: accessToken }, callback);
+      }
+      //FUNCION PARA HUMEDAD
+      function callbackH(data, status) {
+        if (status == "success") {
+          temp = parseFloat(data.result);
+          temp = temp.toFixed(2);
+          h.refresh(temp);
+          setTimeout(getReadingH, 1000);
+        } else {
+          alert("There was a problem");
+        }
+      }
+      function getReadingH() {
+        $.get(url2, { access_token: accessToken }, callbackH);
+      }
+      //FUNCION PARA GRADOS F
+      function callbackF(data, status) {
+        if (status == "success") {
+          temp = parseFloat(data.result);
+          temp = temp.toFixed(2);
+          f.refresh(temp);
+          setTimeout(getReadingF, 1000);
+        } else {
+          alert("There was a problem");
+        }
+      }
+      function getReadingF() {
+        $.get(url3, { access_token: accessToken }, callbackF);
+      }
+    </script>
+  </head>
+
+  <body  style="display:flex; align-content:center;">
+    <div id="gauge" class="200x160px"></div>
+	<div id="gaugeH" class="200x160px"></div>
+	<div id="gaugeF" class="200x160px"></div>
+
+    <script>
+      var g = new JustGage({
+        id: "gauge",
+        value: 0,
+        min: 0,
+        max: 400,
+        title: "Temperatura (C)",
+      });
+      getReading();
+    </script>
+
+    <script>
+      var h = new JustGage({
+        id: "gaugeH",
+        value: 0,
+        min: 0,
+        max: 400,
+        title: "Humedad (%)",
+      });
+      getReadingH();
+    </script>
+
+    <script>
+      var f = new JustGage({
+        id: "gaugeF",
+        value: 0,
+        min: 0,
+        max: 400,
+        title: "Temperatura (F)",
+      });
+      getReadingF();
+    </script>
+  </body>
+</html>
